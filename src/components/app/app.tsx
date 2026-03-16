@@ -13,16 +13,23 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route/protected-route';
 import { useDispatch, useSelector } from '../../services/store';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { getUser } from '../../services/slices/userSlice';
+import { fetchFeeds } from '../../services/slices/feedsSlice';
+import { Preloader } from '@ui';
 
 const App = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const ingredients = useSelector((state) => state.ingredients);
+  const feed = useSelector((state) => state.feed);
+  const user = useSelector((state) => state.user);
+  const background = location.state?.background;
 
   useEffect(() => {
     if (!ingredients.isLoading && !ingredients.isLoaded) {
@@ -30,29 +37,104 @@ const App = () => {
     }
   }, [ingredients.isLoading, ingredients.isLoaded]);
 
+  useEffect(() => {
+    if (!feed.isLoading && !feed.isLoaded) {
+      dispatch(fetchFeeds());
+    }
+  }, [feed.isLoading, feed.isLoaded]);
+
+  useEffect(() => {
+    if (!user.isAuth && !user.isAuthLoading) {
+      dispatch(getUser());
+    }
+  }, []);
+
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes>
+      {background && (
+        <>
+          <Routes>
+            <Route
+              path='/feed/:number'
+              element={
+                <Modal
+                  title='Заказ'
+                  onClose={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <OrderInfo />
+                </Modal>
+              }
+            />
+            <Route
+              path='/profile/orders/:number'
+              element={
+                <ProtectedRoute>
+                  <Modal
+                    title='Заказ'
+                    onClose={() => {
+                      navigate(-1);
+                    }}
+                  >
+                    <OrderInfo />
+                  </Modal>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/ingredients/:id'
+              element={
+                <Modal
+                  title='Ингредиент'
+                  onClose={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <IngredientDetails />
+                </Modal>
+              }
+            />
+          </Routes>
+        </>
+      )}
+      <Routes location={background || location}>
         <Route path='/' element={<ConstructorPage />} />
-        <Route path='/feed' element={<Feed />} />
         <Route
-          path='/feed/:number'
+          path='/login'
           element={
-            <Modal
-              title='Заказ'
-              onClose={() => {
-                navigate(-1);
-              }}
-            >
-              <OrderInfo />
-            </Modal>
+            <ProtectedRoute noAuthOnly>
+              <Login />
+            </ProtectedRoute>
           }
         />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
+        <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route
+          path='/register'
+          element={
+            <ProtectedRoute noAuthOnly>
+              <Register />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/forgot-password'
+          element={
+            <ProtectedRoute noAuthOnly>
+              <ForgotPassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/reset-password'
+          element={
+            <ProtectedRoute noAuthOnly>
+              <ResetPassword />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path='/profile'
           element={
@@ -73,30 +155,11 @@ const App = () => {
           path='/profile/orders/:number'
           element={
             <ProtectedRoute>
-              <Modal
-                title='Заказ'
-                onClose={() => {
-                  navigate(-1);
-                }}
-              >
-                <OrderInfo />
-              </Modal>
+              <OrderInfo />
             </ProtectedRoute>
           }
         />
-        <Route
-          path='/ingredients/:id'
-          element={
-            <Modal
-              title='Ингредиент'
-              onClose={() => {
-                navigate(-1);
-              }}
-            >
-              <IngredientDetails />
-            </Modal>
-          }
-        />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route path='*' element={<NotFound404 />} />
       </Routes>
     </div>

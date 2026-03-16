@@ -13,7 +13,6 @@ export const OrderInfo: FC = () => {
   const userOrders = useSelector((store) => store.orders.orders);
   const orders = [...feedOrders, ...userOrders];
   const orderData = orders.find((o) => o.number === Number(params.number));
-
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;

@@ -1,22 +1,17 @@
 import { getOrdersApi } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { TOrder } from '@utils-types';
-
-interface FetchError {
-  success: boolean;
-  message: string;
-}
+import { TApiError, TOrder } from '@utils-types';
 
 export const fetchOrders = createAsyncThunk<
   TOrder[],
   void,
-  { rejectValue: FetchError }
+  { rejectValue: TApiError }
 >('orders/fetchOrders', async (_, { rejectWithValue }) => {
   try {
     const response = await getOrdersApi();
     return response;
   } catch (error) {
-    const err = error as FetchError;
+    const err = error as TApiError;
     return rejectWithValue(err);
   }
 });

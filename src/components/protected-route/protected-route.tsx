@@ -5,15 +5,19 @@ import { Navigate } from 'react-router-dom';
 
 type ProtectedRouteProps = {
   children: ReactNode;
+  noAuthOnly?: boolean;
 };
-export const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
-  const isAuth = useSelector((state) => state.user.isAuth);
-  const isAuthLoading = useSelector((state) => state.user.isAuthLoading);
-  return isAuthLoading ? (
+
+export const ProtectedRoute: FC<ProtectedRouteProps> = ({
+  children,
+  noAuthOnly
+}) => {
+  const user = useSelector((state) => state.user);
+  return !user.isInitialized || user.isAuthLoading ? (
     <Preloader />
-  ) : isAuth ? (
+  ) : user.isAuth !== (noAuthOnly === true) ? (
     <>{children}</>
   ) : (
-    <Navigate to='/login' replace />
+    <Navigate to={noAuthOnly ? '/' : '/login'} replace />
   );
 };

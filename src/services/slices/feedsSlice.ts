@@ -1,11 +1,6 @@
 import { getFeedsApi } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { TOrder } from '@utils-types';
-
-interface FetchError {
-  success: boolean;
-  message: string;
-}
+import { TApiError, TOrder } from '@utils-types';
 
 interface FetchFeeds {
   orders: TOrder[];
@@ -15,13 +10,13 @@ interface FetchFeeds {
 export const fetchFeeds = createAsyncThunk<
   FetchFeeds,
   void,
-  { rejectValue: FetchError }
+  { rejectValue: TApiError }
 >('feed/fetchFeeds', async (_, { rejectWithValue }) => {
   try {
     const response = await getFeedsApi();
     return { ...response };
   } catch (error) {
-    const err = error as FetchError;
+    const err = error as TApiError;
     return rejectWithValue(err);
   }
 });
