@@ -26,20 +26,17 @@ const initialState = {
 } satisfies UserState as UserState;
 
 export const getUser = createAsyncThunk<
-  TUser | null,
+  TUser,
   void,
   { rejectValue: TApiError }
 >('user/getUser', async (_, { rejectWithValue }) => {
-  if (localStorage.getItem('refreshToken')) {
-    try {
-      const response = await getUserApi();
-      return response.user;
-    } catch (error) {
-      const err = error as TApiError;
-      return rejectWithValue(err);
-    }
+  try {
+    const response = await getUserApi();
+    return response.user;
+  } catch (error) {
+    const err = error as TApiError;
+    return rejectWithValue(err);
   }
-  return null;
 });
 
 export const loginUser = createAsyncThunk<
