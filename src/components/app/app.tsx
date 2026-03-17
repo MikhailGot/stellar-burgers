@@ -21,6 +21,7 @@ import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { getUser } from '../../services/slices/userSlice';
 import { fetchFeeds } from '../../services/slices/feedsSlice';
 import { Preloader } from '@ui';
+import { fetchOrders } from '../../services/slices/ordersSlice';
 
 const App = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const App = () => {
   const location = useLocation();
   const ingredients = useSelector((state) => state.ingredients);
   const feed = useSelector((state) => state.feed);
+  const userOrders = useSelector((state) => state.orders);
   const user = useSelector((state) => state.user);
   const background = location.state?.background;
 
@@ -44,10 +46,16 @@ const App = () => {
   }, [feed.isLoading, feed.isLoaded]);
 
   useEffect(() => {
-    if (!user.isAuth && !user.isAuthLoading) {
+    if (!user.user && !user.isAuthLoading) {
       dispatch(getUser());
     }
   }, []);
+
+  useEffect(() => {
+    if ((user.user, !userOrders.isLoaded && !userOrders.isLoading)) {
+      dispatch(fetchOrders());
+    }
+  }, [user.user, userOrders.isLoaded, userOrders.isLoading]);
 
   return (
     <div className={styles.app}>

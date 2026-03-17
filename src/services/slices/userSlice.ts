@@ -13,17 +13,15 @@ import { deleteCookie, setCookie } from '../../utils/cookie';
 
 interface UserState {
   user: TUser | null;
-  isAuth: boolean;
   isAuthLoading: boolean;
-  isInitialized: boolean;
+  isAuthChecked: boolean;
   errorText: string;
 }
 
 const initialState = {
   user: null,
-  isAuth: false,
   isAuthLoading: false,
-  isInitialized: false,
+  isAuthChecked: false,
   errorText: ''
 } satisfies UserState as UserState;
 
@@ -119,50 +117,42 @@ export const userSlice = createSlice({
     builder
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.isAuth = true;
         state.isAuthLoading = false;
         state.errorText = '';
-        state.isInitialized = true;
+        state.isAuthChecked = true;
       })
       .addCase(getUser.pending, (state) => {
         state.isAuthLoading = true;
-        state.isAuth = false;
         state.errorText = '';
-        state.isInitialized = true;
+        state.isAuthChecked = true;
       })
       .addCase(getUser.rejected, (state, action) => {
         state.isAuthLoading = false;
-        state.isAuth = false;
         state.errorText = action.payload?.message || 'Неизвестная ошибка';
-        state.isInitialized = true;
+        state.isAuthChecked = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.isAuth = true;
         state.isAuthLoading = false;
         state.errorText = '';
-        state.isInitialized = true;
+        state.isAuthChecked = true;
       })
       .addCase(loginUser.pending, (state) => {
         state.isAuthLoading = true;
-        state.isAuth = false;
         state.errorText = '';
-        state.isInitialized = true;
+        state.isAuthChecked = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isAuthLoading = false;
-        state.isAuth = false;
         state.errorText = action.payload?.message || 'Неизвестная ошибка';
-        state.isInitialized = true;
+        state.isAuthChecked = true;
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
-        state.isAuth = false;
         state.user = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthLoading = false;
-        state.isAuth = true;
         state.errorText = '';
       })
       .addCase(updateUser.fulfilled, (state, action) => {
@@ -174,12 +164,10 @@ export const userSlice = createSlice({
       })
       .addCase(registerUser.pending, (state) => {
         state.isAuthLoading = true;
-        state.isAuth = false;
         state.errorText = '';
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isAuthLoading = false;
-        state.isAuth = false;
         state.errorText = action.payload?.message || 'Неизвестная ошибка';
       });
   }

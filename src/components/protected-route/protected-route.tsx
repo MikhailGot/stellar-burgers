@@ -13,9 +13,9 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({
   noAuthOnly
 }) => {
   const user = useSelector((state) => state.user);
-  return !user.isInitialized || user.isAuthLoading ? (
+  return !user.isAuthChecked || user.isAuthLoading ? (
     <Preloader />
-  ) : user.isAuth !== (noAuthOnly === true) ? (
+  ) : (user.user === null) === (noAuthOnly === true) ? (
     <>{children}</>
   ) : (
     <Navigate to={noAuthOnly ? '/' : '/login'} replace />

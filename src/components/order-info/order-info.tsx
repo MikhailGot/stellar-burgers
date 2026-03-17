@@ -1,9 +1,10 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useSelector } from '../../services/store';
 import { useParams } from 'react-router-dom';
+import { fetchOrders } from 'src/services/slices/ordersSlice';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
@@ -13,7 +14,7 @@ export const OrderInfo: FC = () => {
   const userOrders = useSelector((store) => store.orders.orders);
   const orders = [...feedOrders, ...userOrders];
   const orderData = orders.find((o) => o.number === Number(params.number));
-  /* Готовим данные для отображения */
+
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
@@ -54,7 +55,6 @@ export const OrderInfo: FC = () => {
       total
     };
   }, [orderData, ingredients]);
-
   if (!orderInfo) {
     return <Preloader />;
   }
