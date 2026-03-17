@@ -46,16 +46,16 @@ const App = () => {
   }, [feed.isLoading, feed.isLoaded]);
 
   useEffect(() => {
-    if (!user.user && !user.isAuthLoading) {
-      dispatch(getUser());
-    }
-  }, []);
+    dispatch(getUser());
+  }, [dispatch]);
 
   useEffect(() => {
-    if ((user.user, !userOrders.isLoaded && !userOrders.isLoading)) {
-      dispatch(fetchOrders());
-    }
-  }, [user.user, userOrders.isLoaded, userOrders.isLoading]);
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
+  const modalClose = () => {
+    navigate(-1);
+  };
 
   return (
     <div className={styles.app}>
@@ -66,12 +66,7 @@ const App = () => {
             <Route
               path='/feed/:number'
               element={
-                <Modal
-                  title='Заказ'
-                  onClose={() => {
-                    navigate(-1);
-                  }}
-                >
+                <Modal title='Заказ' onClose={modalClose}>
                   <OrderInfo />
                 </Modal>
               }
@@ -80,12 +75,7 @@ const App = () => {
               path='/profile/orders/:number'
               element={
                 <ProtectedRoute>
-                  <Modal
-                    title='Заказ'
-                    onClose={() => {
-                      navigate(-1);
-                    }}
-                  >
+                  <Modal title='Заказ' onClose={modalClose}>
                     <OrderInfo />
                   </Modal>
                 </ProtectedRoute>
@@ -94,12 +84,7 @@ const App = () => {
             <Route
               path='/ingredients/:id'
               element={
-                <Modal
-                  title='Ингредиент'
-                  onClose={() => {
-                    navigate(-1);
-                  }}
-                >
+                <Modal title='Ингредиент' onClose={modalClose}>
                   <IngredientDetails />
                 </Modal>
               }
