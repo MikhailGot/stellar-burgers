@@ -49,17 +49,18 @@ export const burgerConstructorSlice = createSlice({
   name: 'burger-constructor',
   initialState,
   reducers: {
-    addIngredient(state, action: PayloadAction<TIngredient>) {
-      const item: TConstructorIngredient = {
-        ...action.payload,
-        id: nanoid()
-      };
-
-      if (item.type === 'bun') {
-        state.bun = item;
-      } else {
-        state.ingredients.push(item);
-      }
+    addIngredient: {
+      reducer(state, action: PayloadAction<TConstructorIngredient>) {
+        const item = action.payload;
+        if (item.type === 'bun') {
+          state.bun = item;
+        } else {
+          state.ingredients.push(item);
+        }
+      },
+      prepare: (ingredient: TIngredient) => ({
+        payload: { ...ingredient, id: nanoid() }
+      })
     },
     moveIngredient(state, action: PayloadAction<MoveIngredient>) {
       const direction = action.payload.direction;
@@ -101,6 +102,8 @@ export const burgerConstructorSlice = createSlice({
           ingredients: state.ingredients.map((i) => i._id.toString())
         };
         state.orderRequest = false;
+        state.bun = null;
+        state.ingredients = [];
       })
       .addCase(createOrder.pending, (state, action) => {
         state.orderRequest = true;

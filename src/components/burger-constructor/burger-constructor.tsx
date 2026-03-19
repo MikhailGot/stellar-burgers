@@ -6,18 +6,31 @@ import {
   createOrder,
   resetState
 } from '../../services/slices/burgerConstructorSlice';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
   const dispatch = useDispatch();
   const constructorItems = useSelector((state) => state.burgerConstructor);
   const orderRequest = constructorItems.orderRequest;
-
   const orderModalData = constructorItems.orderModalData;
+
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
-    dispatch(createOrder(constructorItems.ingredients));
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    dispatch(
+      createOrder([
+        constructorItems.bun,
+        constructorItems.bun,
+        ...constructorItems.ingredients
+      ])
+    );
   };
   const closeOrderModal = () => {
     dispatch(resetState());
