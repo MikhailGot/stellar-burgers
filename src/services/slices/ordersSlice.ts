@@ -30,7 +30,7 @@ export const getOrderByNumber = createAsyncThunk<
   }
 });
 
-interface FeedsState {
+interface OrdersState {
   orders: TOrder[];
   orderByNumber: TOrder | undefined;
   isLoading: boolean;
@@ -44,7 +44,7 @@ const initialState = {
   isLoading: false,
   isLoaded: false,
   errorMessage: ''
-} satisfies FeedsState as FeedsState;
+} satisfies OrdersState as OrdersState;
 
 export const ordersSlice = createSlice({
   name: 'orders',

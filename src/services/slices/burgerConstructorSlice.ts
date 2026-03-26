@@ -3,7 +3,7 @@ import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
 import { nanoid } from '@reduxjs/toolkit';
 import { orderBurgerApi, TNewOrderResponse } from '@api';
 
-interface BurgerConstructorState {
+export interface BurgerConstructorState {
   bun: TConstructorIngredient | null;
   ingredients: TConstructorIngredient[];
   orderRequest: boolean;
@@ -38,7 +38,7 @@ export const createOrder = createAsyncThunk<
   }
 );
 
-const initialState = {
+export const initialState = {
   bun: null,
   ingredients: [],
   orderRequest: false,
