@@ -10,8 +10,7 @@ export const Login: FC = () => {
   const [password, setPassword] = useState('');
 
   const errorText = useSelector((state) => state.user.errorText);
-  const isAuth = useSelector((state) => state.user.isAuth);
-  const isAuthLoading = useSelector((state) => state.user.isAuth);
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -21,12 +20,12 @@ export const Login: FC = () => {
   };
 
   useEffect(() => {
-    if (isAuth) {
+    if (user.user) {
       navigate('/', { replace: true });
     }
-  }, [isAuth, navigate]);
+  }, [user.user, navigate]);
 
-  return isAuthLoading ? (
+  return user.isAuthLoading ? (
     <Preloader />
   ) : (
     <LoginUI

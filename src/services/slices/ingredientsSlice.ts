@@ -1,22 +1,17 @@
 import { getIngredientsApi } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { TIngredient } from '@utils-types';
-
-interface FetchError {
-  success: boolean;
-  message: string;
-}
+import { TApiError, TIngredient } from '@utils-types';
 
 export const fetchIngredients = createAsyncThunk<
   TIngredient[],
   void,
-  { rejectValue: FetchError }
+  { rejectValue: TApiError }
 >('ingredients/fetchIngredients', async (_, { rejectWithValue }) => {
   try {
     const response = await getIngredientsApi();
     return response;
   } catch (error) {
-    const err = error as FetchError;
+    const err = error as TApiError;
     return rejectWithValue(err);
   }
 });
