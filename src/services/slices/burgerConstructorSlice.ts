@@ -38,7 +38,7 @@ export const createOrder = createAsyncThunk<
   }
 );
 
-const initialState = {
+export const initialState = {
   bun: null,
   ingredients: [],
   orderRequest: false,

@@ -35,3 +35,10 @@
 //     }
 //   }
 // }
+
+Cypress.Commands.add('getConstructor',() => cy.get('[data-cy="burger-constructor"]'));
+Cypress.Commands.add('getIngredientCard',() => cy.get('[data-cy="ingredient-card"]'));
+
+Cypress.Commands.add('getModal',() => cy.get('[data-cy="modal"]'));
+Cypress.Commands.add('getModalOverlay',() => cy.getModal().get('[data-cy="modal-overlay"]'));
+Cypress.Commands.add('getModalCloseButton',() => cy.getModal().get('[data-cy="modal-close-button"]'));
